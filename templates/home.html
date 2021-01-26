@@ -1,0 +1,7 @@
+Tervetuloa!
+<p>
+{% if session.user_id %}
+<a href="/logout">Kirjaudu ulos</a>
+{% else %}
+<a href="/login">Kirjaudu sisään</a> | <a href="/signup">Luo tunnus</a>
+{% endif %}
