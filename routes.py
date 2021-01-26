@@ -1,9 +1,10 @@
-import app
+from app import app
 from flask import render_template, request, redirect
+import users
 
 @app.route("/")
-def index():
-    return render_template("index.html")
+def home():
+    return render_template("home.html")
 
 @app.route("/login", methods=["get", "post"])
 def login():
@@ -13,14 +14,13 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
         if users.login(username, password):
-            session["username"] = username
             return redirect("/")
         else:
             return render_template("error.html", message="Väärä tunnus tai salasana")
 
 @app.route("/logout")
 def logout():
-    del session["username"]
+    users.logout()
     return redirect("/")
 
 @app.route("/signup", methods=["get", "post"])
