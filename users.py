@@ -43,3 +43,8 @@ def is_admin():
         return True
     else:
         return False
+
+def add_friend(friend_id):
+    sql = "INSERT INTO friends (user_id, friend_id) VALUES (:user_id, :friend_id)"
+    db.session.execute(sql, {"user_id":user_id(), "friend_id":friend_id})
+    db.session.commit()

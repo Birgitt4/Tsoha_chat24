@@ -78,5 +78,9 @@ def new():
 def send_thread():
     title = request.form["title"]
     content = request.form["content"]
-    messages.new_thread(title, content)
-    return redirect("/")
+    #mahdollisuus luoda privaatti thread
+    thread_id = messages.new_thread(title, content)
+    if thread_id == 0:
+        #error viesti ? kirjautumaton käyttäjä
+        return redirect("/")
+    return redirect("/thread/"+str(thread_id))
