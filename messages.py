@@ -16,7 +16,7 @@ def get_thread(id):
 def get_sender(id):
     sql = "SELECT user_id FROM messages WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
-    return result[0][0]
+    return result.fetchall()[0][0]
 
 def new_thread(title, content):
     user_id = users.user_id()
@@ -41,12 +41,12 @@ def add_message(content, id):
     db.session.commit()
     return True
 
-def search(title):
+def search_title(title):
     sql = "SELECT title FROM threads WHERE title LIKE '%:title%'"
     result = db.session.execute(sql, {"title":title})
     return result.fetchall()
 
-def search(message):
+def search_message(message):
     sql = "SELECT title FROM threads WHERE id=(SELECT title_id FROM messages WHERE content LIKE '%:message%'"
     result = db.session.execute(sql, {"message":message})
     return result.fetchall()
