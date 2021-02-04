@@ -1,10 +1,36 @@
 from app import app
 from flask import render_template, request, redirect
 import users
+import messages
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    list = messages.get_threads()
+    return render_template("home.html", threads = list)
+
+@app.route("/thread/<int:id>", methods=["get","post"])
+def thread(id):
+    if request.method == "POST":
+        content = request.form["content"]
+        if (content != ""):
+            messages.add_message(content, id)
+    is_admin = users.is_admin()
+    list = messages.get_messages(id)
+    starter = messages.get_thread(id)
+    return render_template("thread.html", starter = starter, messages = list, id = id, is_admin = is_admin)
+
+@app.route("/thread/edit/<int:id>", methods=["get","post"])
+def edit(id):
+    option = request.form["option"+str(id)]
+    thrd = request.form["thread_id"]
+    print(thrd)
+    print("ennendelete")
+    if (option != "empty"):
+        print("delete")
+        if option == "delete":
+            print(id)
+            messages.delete(id)
+    return redirect("/thread/"+str(thrd))
 
 @app.route("/login", methods=["get", "post"])
 def login():
@@ -34,3 +60,19 @@ def signup():
             return redirect("/")
         else:
             return render_template("error.html", message="Rekisteröinti ei onnistunut")
+
+@app.route("/new_thread")
+def new():
+    return render_template("new_thread.html")
+
+@app.route("/send", methods=["post"])
+def send_thread():
+    title = request.form["title"]
+    content = request.form["content"]
+    messages.new_thread(title, content)
+    return redirect("/")
+
+@app.route("/delete")
+def delete_message():
+    print("delete")
+    # pitäisi päästä takaisin tuohon sivulle -> return redirect("/thread/<int:id>")

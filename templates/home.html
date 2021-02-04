@@ -1,7 +1,14 @@
-Tervetuloa!
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block content %}
+<hr>
+{% for thread in threads %}
+<a href="/thread/{{ thread[1] }}">{{ thread[0] }}</a>
 <p>
-{% if session.user_id %}
-<a href="/logout">Kirjaudu ulos</a>
-{% else %}
-<a href="/login">Kirjaudu sisään</a> | <a href="/signup">Luo tunnus</a>
-{% endif %}
+<hr>
+{% endfor %}
+
+<a href="/new_thread">Uusi keskustelu</a>
+{% endblock %}
+
+

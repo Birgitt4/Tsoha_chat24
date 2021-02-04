@@ -27,3 +27,19 @@ def signup(username, password):
     except:
         return False
     return login(username, password)
+
+def user_id():
+    return session.get("user_id", 0)
+
+def my_threads():
+    sql = "SELECT title FROM threads WHERE user_id=:user_id"
+    result = db.session.execute(sql, {"user_id":session.get("user_id", 0)})
+    return result.fetchall()
+
+def is_admin():
+    sql = "SELECT status FROM users WHERE id=:user_id"
+    result =db.session.execute(sql, {"user_id":session.get("user_id")})
+    if result.first()[0] == "admin":
+        return True
+    else:
+        return False
