@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+<style>
+
+body {
+    margin: auto;
+    max-width: 50em;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    background-color:rgb(250, 250, 250);
+}
+</style>
+</head>
+<title>Chat24</title>
+<a href="/">Etusivu</a>
+{% if session.user_id %}
+<a href="/logout">Kirjaudu ulos</a>
+{% else %}
+<a href="/login">Kirjaudu sisään</a> | <a href="/signup">Luo tunnus</a>
+{% endif %}
+<hr>
+{% block content %}{% endblock %}
+<hr>

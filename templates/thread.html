@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block content %}
+<h2> {{ starter[0][0] }} </h2>
+<br>
+{{ starter[0][1] }}
+<hr>
+{% for message in messages %}
+{% if message[2] == message_id %}
+<form action="/thread/edit" method="POST">
+Viesti: <br>
+<textarea name="content" rows="6" cols="40">
+{{ message[0] }}</textarea><br>
+<input type="submit" value="Muokkaa">
+<input type="hidden" name="thread_id" value="{{ id }}">
+<input type="hidden" name="message_id" value="{{ message_id }}">
+</form>
+{% else %}
+{{ message[0] }}
+{% if session.user_id == message[1] or is_admin %}
+<form action="/thread/edit/{{ message[2] }}" method="POST">
+    <select name="option{{ message[2] }}" onchange="this.form.submit()">
+        <option value="empty" selected> ...
+        <option value="delete"> poista
+        <option value="edit"> muokkaa
+    </select>
+    <input type="hidden" name="thread_id" value="{{ id }}">
+</form>
+
+{% endif %}
+{% endif %}
+<hr>
+{% endfor %}
+
+<form action="/thread/{{ id }}" method="POST">
+Viesti: <br>
+<textarea name="content" rows="6" cols="40">
+</textarea><br>
+<input type="submit" value="Lähetä">
+</form>
+{% endblock %}
+
+<script>
+function selection(value) {
+    console.log(value);
+}
+</script>
