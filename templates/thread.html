@@ -34,8 +34,12 @@ Viesti: <br>
 
 <form action="/thread/{{ id }}" method="POST">
 Viesti: <br>
-<textarea name="content" rows="6" cols="40">
-</textarea><br>
+{% if session.loggedin == True %}
+<textarea name="content" rows="6" cols="40"></textarea>
+{% else %}
+<textarea name="content" rows="6" cols="40">Kirjaudu sisään kommentoidaksesi</textarea>
+{% endif %}
+<br>
 <input type="submit" value="Lähetä">
 </form>
 {% endblock %}

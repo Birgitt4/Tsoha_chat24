@@ -14,7 +14,10 @@ def thread(id):
         content = request.form["content"]
         if (content != ""):
             messages.add_message(content, id)
-    is_admin = users.is_admin()
+    if users.logged() == True:
+        is_admin = users.is_admin()
+    else:
+        is_admin = False
     list = messages.get_messages(id)
     starter = messages.get_thread(id)
     return render_template("thread.html", starter = starter, messages = list, id = id, is_admin = is_admin, message_id = 0)
@@ -72,6 +75,8 @@ def signup():
 
 @app.route("/new_thread")
 def new():
+    if users.logged() != True:
+        return redirect("/login")
     return render_template("new_thread.html")
 
 @app.route("/send", methods=["post"])

@@ -11,12 +11,14 @@ def login(username, password):
     else:
         if check_password_hash(user[0], password):
             session["user_id"] = user[1]
+            session["loggedin"] = True
             return True
         else:
             return False
 
 def logout():
     del session["user_id"]
+    del session["loggedin"]
 
 def signup(username, password):
     hash_val = generate_password_hash(password)
@@ -30,6 +32,9 @@ def signup(username, password):
 
 def user_id():
     return session.get("user_id", 0)
+
+def logged():
+    return session.get("loggedin", 0)
 
 def my_threads():
     sql = "SELECT title FROM threads WHERE user_id=:user_id"
