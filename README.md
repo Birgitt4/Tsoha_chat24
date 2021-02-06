@@ -8,6 +8,7 @@ Tällä hetkellä sovelluksella on etusivu, jossa kaikki aloitukset ovat listatt
 Normaali käyttäjä voi myös muokata tai poistaa omia viestejään ja ylläpitäjä voi poistaa kaikkien käyttäjien lähettämiä viestejä.
 Aloituksissa ei ole vielä poistamis/muokkaus mahdollisuutta!
 
+Myöskään lomakkeissa ei ole tarkastuksia syötteestä!
 
 ### vielä tulossa:
 Käyttäjänimet (ja ajat?) viesteihin näkyviin.
