@@ -1,57 +1,13 @@
 from db import db
 import users
 
-#lankoja koskevat metodit voisi viedä omaan luokkaansa
-
-def get_threads():
-    sql = "SELECT title, id FROM threads ORDER BY id"
-    result = db.session.execute(sql)
-    return result.fetchall()
-
-def get_thread(id):
-    sql = "SELECT title, content FROM threads WHERE id=:id"
-    result = db.session.execute(sql, {"id":id})
-    return result.fetchall()
-
-def new_thread(title, content, privat):
-    user_id = users.user_id()
-    if user_id == 0:
-        return 0
-    sql = "INSERT INTO threads (title, content, user_id, privat) VALUES (:title, :content, :user_id, :privat) RETURNING id"
-    result = db.session.execute(sql, {"title":title, "content":content, "user_id":user_id, "privat":privat})
-    thread_id = result.fetchone()[0]
-    if privat == 1:
-        add_user(users.user_id(), thread_id)
-    return thread_id
-
-def add_user(user_id, thread_id):
-    sql = "INSERT INTO privateThreads (thread_id, user_id) VALUES (:thread_id, :user_id)"
-    db.session.execute(sql, {"thread_id":thread_id, "user_id":user_id})
-    db.session.commit()
-
-def follow(thread_id):
-    sql = "INSERT INTO follows (thread_id, user_id) VALUES (:thread_id, :user_is)"
-    db.session.execute(sql, {"thread_id":thread_id, "user_id":users.user_id()})
-    db.session.commit()
-
-def search_title(title):
-    sql = "SELECT title FROM threads WHERE title LIKE '%:title%'"
-    result = db.session.execute(sql, {"title":title})
-    return result.fetchall()
-
-def search_message(message):
-    sql = "SELECT title FROM threads WHERE id=(SELECT title_id FROM messages WHERE content LIKE '%:message%'"
-    result = db.session.execute(sql, {"message":message})
-    return result.fetchall()
-
-#viestejä koskevat
 def get_sender(id):
     sql = "SELECT user_id FROM messages WHERE id=:id"
     result = db.session.execute(sql, {"id":id})
     return result.fetchall()[0][0]
 
 def get_messages(id):
-    sql = "SELECT content, user_id, id FROM messages WHERE thread_id=:id ORDER BY id"
+    sql = "SELECT M.content, M.user_id, M.id, U.username FROM messages M, users U WHERE M.thread_id=:id AND M.user_id=U.id ORDER BY M.id"
     result = db.session.execute(sql, {"id":id})
     return result.fetchall()
 

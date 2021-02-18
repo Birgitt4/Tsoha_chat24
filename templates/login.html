@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
+{% if error: %}
+    <p>{{ message }}</p>
+{% endif %}
 <h2>Kirjaudu sisään</h2>
 <form action="/login" method="post">
 Tunnus: <input type="text" name="username">

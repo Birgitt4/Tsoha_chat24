@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 {% extends "layout.html" %}
 {% block content %}
-<hr>
 {% for thread in threads %}
 <a href="/thread/{{ thread[1] }}">{{ thread[0] }}</a>
 <p>

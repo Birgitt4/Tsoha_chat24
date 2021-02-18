@@ -1,10 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
+{% if error: %}
+    <p>{{ message }}</p>
+{% endif %}
 <form action="/signup" method="post">
 Tunnus: <input type="text" name="username">
 <p>
-Salasana: <input type="text" name="password">
+Salasana: <input type="password" name="password">
 <p>
+Salasana uudelleen: <input type="password" name="passcheck">
 <input type="submit" value="Luo tunnus">
 </form>
 {% endblock %}

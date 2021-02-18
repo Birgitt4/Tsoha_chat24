@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block content %}
+
+{{ username }}
+<br>
+<button onclick="publicThreads()">Aloitukset</button>
+<button onclick="privateThreads()">Yksityiset</button>
+<button onclick="followedThreads()">Seuratut</button>
+<br>
+<div id="public">
+{% for thread in public_threads %}
+<a href="/thread/{{ thread[1] }}">{{ thread[0] }}</a>
+<hr>
+{% endfor %}
+</div>
+<div id="private" style="display: none;">
+{% for thread in private_threads %}
+<a href="/thread/{{ thread[1] }}">{{ thread[0] }}</a>
+<hr>
+{% endfor %}
+</div>
+<div id="followed" style="display: none;">
+{% for thread in followed %}
+<a href="/thread/{{ thread[1] }}">{{ thread[0] }}</a>
+<hr>
+{% endfor %}
+</div>
+
+<script>
+function publicThreads() {
+    document.getElementById("private").style.display = "none";
+    document.getElementById("followed").style.display = "none";
+    var x = document.getElementById("public");
+    if (x.style.display == "none") {
+        x.style.display = "block";
+    }
+}
+function privateThreads() {
+    document.getElementById("public").style.display = "none";
+    document.getElementById("followed").style.display = "none";
+    var x = document.getElementById("private");
+    if (x.style.display == "none") {
+        x.style.display = "block";
+    }
+}
+function followedThreads() {
+    document.getElementById("private").style.display = "none";
+    document.getElementById("public").style.display = "none";
+    var x = document.getElementById("followed");
+    if (x.style.display == "none") {
+        x.style.display = "block";
+    }
+}
+</script>
+{% endblock %}

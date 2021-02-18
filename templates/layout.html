@@ -32,6 +32,7 @@ a.nav:link {
         <li><a class="nav" href="/">Etusivu</a></li>
         {% if session.user_id %}
         <li><a class="nav" href="/logout">Kirjaudu ulos</a></li>
+        <li><a class="nav" href="/profile">Oma sivu</a></li>
         {% else %}
         <li><a class="nav" href="/login">Kirjaudu sisään</a></li>
         <li><a class="nav" href="/signup">Luo tunnus</a></li>
