@@ -23,14 +23,6 @@ def thread(id):
     starter = threads.get_thread(id)
     return render_template("thread.html", starter = starter, messages = list, id = id, is_admin = is_admin, message_id = 0)
 
-@app.route("/thread/edit", methods=["get","post"])
-def edit():
-    message_id = request.form["message_id"]
-    thrd = request.form["thread_id"]
-    content = request.form["content"]
-    messages.edit(message_id, content)
-    return redirect("/thread/"+str(thrd))
-
 @app.route("/thread/edit/<int:id>", methods=["get","post"])
 def del_or_edit(id):
     option = request.form["option"+str(id)]
@@ -44,6 +36,20 @@ def del_or_edit(id):
             starter = threads.get_thread(thrd)
             return render_template("thread.html", starter = starter, messages = list, id = thrd, is_admin = is_admin, message_id = id)
     return redirect("/thread/"+str(thrd))
+
+@app.route("/thread/edit", methods=["get","post"])
+def edit():
+    message_id = request.form["message_id"]
+    thrd = request.form["thread_id"]
+    content = request.form["content"]
+    messages.edit(message_id, content)
+    return redirect("/thread/"+str(thrd))
+
+@app.route("/thread/edit_starter/<int:id>", methods=["get","post"])
+def starter_edit(id):
+    content = request.form["content"]
+    threads.edit_content(id, content)
+    return redirect("/thread/"+str(id))
 
 @app.route("/new_thread")
 def new():
@@ -63,6 +69,32 @@ def send_thread():
         return redirect("/")
     return redirect("/thread/"+str(thread_id))
 
+@app.route("/search", methods=["get","post"])
+def search():
+    srch_word = request.form["srch"]
+    if srch_word == "":
+        return redirect("/")
+    t = request.form["thrd"]
+    m = request.form["mssg"]
+    title_list = []
+    message_list = []
+    from_t = False
+    from_m = False
+    if t == "t":
+        from_t = True
+        title_list = threads.search(srch_word)
+    if m == "m":
+        from_m = True
+        message_list = messages.search(srch_word)
+    return render_template("search_results.html", title_list=title_list, message_list=message_list, from_m=from_m, from_t=from_t)
+
+@app.route("/save/<int:id>", methods=["get","post"])
+def save(id):
+    if users.logged():
+        users.save(id)
+    return redirect("/thread/"+str(id))
+
+
 #Profiili
 
 @app.route("/profile/<int:user_id>")
@@ -71,7 +103,7 @@ def profile(user_id):
     username = users.get_name(user_id)
     public_threads = users.get_threads(user_id, 0)
     private_threads = users.get_threads(user_id, 1)
-    followed = users.get_followed(user_id)
+    followed = users.get_saved(user_id)
     return render_template("profile.html", username=username, public_threads=public_threads,
     private_threads=private_threads, followed=followed)
 

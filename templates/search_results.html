@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block content %}
+<div class="column side">
+    <a class="normal" href="/new_thread">Uusi keskustelu</a>
+    <br>
+    <br>
+    Haku:
+    <br>
+    <form action="/search" method="POST">
+        <input type="checkbox" id="srchthrd" name="thrd" value="t">
+        <label for="srchthrd"> Etsi aloituksista</label>
+        <br>
+        <input type="checkbox" id="srchmssg" name="mssg" value="m">
+        <label for="srchmssg">Etsi vastauksista</label>
+        <br>
+        <input type="search" name="srch">
+        <br>
+        <input type="submit" value="Etsi">
+        <input type="hidden" name="thrd" value="h">
+        <input type="hidden" name="mssg" value="h">
+    </form>
+</div>
+<div class="column middle">
+    {% if from_t and from_m %}
+    <button onclick="titleSearch()">Aloitukset</button>
+    <button onclick="messageSearch()">Viestit</button>
+    {% endif %}
+    <div id="titles">
+        {% for title in title_list %}
+        <p>
+            <a class="normal" href="/thread/{{ title[0] }}">{{ title[1] }}</a>
+            <br>
+            {{ title[2] }}
+        </p>
+        <hr>
+        {% endfor %}
+    </div>
+    {% if from_t %}
+        <div id="messages" style="display: none;">
+    {% else %}
+        <div>
+    {% endif %}
+        {% for message in message_list %}
+        <p>
+            <a class="normal" href="/thread/{{ message[0] }}#{{ message[1] }}">{{ message[2] }}</a>
+        </p>
+        <hr>
+        {% endfor %}
+    </div>
+</div>
+<script>
+function titleSearch() {
+    document.getElementById("messages").style.display = "none";
+    var x = document.getElementById("titles");
+    if (x.style.display == "none") {
+        x.style.display = "block";
+    }
+}
+function messageSearch() {
+    document.getElementById("titles").style.display = "none";
+    var x = document.getElementById("messages");
+    if (x.style.display == "none") {
+        x.style.display = "block";
+    }
+}
+</script>
+{% endblock %}

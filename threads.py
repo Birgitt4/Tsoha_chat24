@@ -28,17 +28,12 @@ def add_user(user_id, thread_id):
     db.session.execute(sql, {"thread_id":thread_id, "user_id":user_id})
     db.session.commit()
 
-def follow(thread_id):
-    sql = "INSERT INTO follows (thread_id, user_id) VALUES (:thread_id, :user_is)"
-    db.session.execute(sql, {"thread_id":thread_id, "user_id":users.user_id()})
+def search(word):
+    sql = "SELECT id, title, content FROM threads WHERE (title LIKE :word OR content LIKE :message) AND privat=0 ORDER BY id"
+    result = db.session.execute(sql, {"word":"%"+word+"%", "message":"%"+word+"%"})
+    return result.fetchall()
+
+def edit_content(id, content):
+    sql = "UPDATE threads SET content=:content WHERE id=:id"
+    db.session.execute(sql, {"content":content, "id":id})
     db.session.commit()
-
-def search_title(title):
-    sql = "SELECT title FROM threads WHERE title LIKE '%:title%'"
-    result = db.session.execute(sql, {"title":title})
-    return result.fetchall()
-
-def search_message(message):
-    sql = "SELECT title FROM threads WHERE id=(SELECT title_id FROM messages WHERE content LIKE '%:message%'"
-    result = db.session.execute(sql, {"message":message})
-    return result.fetchall()

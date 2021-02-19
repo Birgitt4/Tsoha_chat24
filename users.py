@@ -31,7 +31,7 @@ def signup(username, password):
     return True
 
 def username_taken(username):
-    sql = "SELECT 1 FROM users WHERE username=:username"
+    sql = "SELECT COUNT(*) FROM users WHERE username=:username"
     result = db.session.execute(sql, {"username":username})
     if result.first()[0] == 1:
         return True
@@ -61,14 +61,19 @@ def get_threads(user_id, privat):
     result = db.session.execute(sql, {"user_id":user_id, "privat":privat})
     return result.fetchall()
 
-def get_followed(user_id):
-    sql = "SELECT T.title, T.id FROM threads T, follows F WHERE F.user_id=:user_id AND T.id=F.thread_id"   
+def get_saved(user_id):
+    sql = "SELECT T.title, T.id FROM threads T, saved S WHERE S.user_id=:user_id AND T.id=S.thread_id"   
     result = db.session.execute(sql, {"user_id":user_id})
     return result.fetchall()
 
-def follow(thread_id):
-    sql = "INSERT INTO follows (thread_id, user_id) VALUES (:thread_id, :user_id)"
+def save(thread_id):
+    sql = "SELECT COUNT(*) FROM saved WHERE thread_id=:thread_id AND user_id=:user_id"
+    result = db.session.execute(sql, {"thread_id":thread_id, "user_id":user_id()})
+    if result.first()[0] == 1:
+        return
+    sql = "INSERT INTO saved (thread_id, user_id) VALUES (:thread_id, :user_id)"
     db.session.execute(sql, {"thread_id":thread_id, "user_id":user_id()})
+    db.session.commit()
 
 def add_friend(friend_id):
     sql = "INSERT INTO friends (user_id, friend_id) VALUES (:user_id, :friend_id)"

@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
+<div class="column side">
+
+</div>
+<div class="column middle">
 {% if error: %}
     <p>{{ message }}</p>
 {% endif %}
@@ -11,4 +15,5 @@ Salasana: <input type="password" name="password">
 Salasana uudelleen: <input type="password" name="passcheck">
 <input type="submit" value="Luo tunnus">
 </form>
+</div>
 {% endblock %}

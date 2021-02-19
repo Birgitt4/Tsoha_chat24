@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block content %}
+<div class="column side">
+    
+</div>
+<div class="column middle">
 <form action="/send" method="POST">
 Otsikko: <input type="text" name="title"> <br>
 Viesti: <br>
@@ -5,3 +12,5 @@ Viesti: <br>
 </textarea><br>
 <input type="submit" value="Lähetä">
 </form>
+</div>
+{% endblock %}

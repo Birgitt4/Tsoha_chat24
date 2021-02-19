@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
+<div class="column side">
+
+</div>
+<div class="column middle">
 {% if error: %}
     <p>{{ message }}</p>
 {% endif %}
@@ -11,4 +15,5 @@ Salasana: <input type="password" name="password">
 <p>
 <input type="submit" value="Kirjaudu">
 </form>
+</div>
 {% endblock %}

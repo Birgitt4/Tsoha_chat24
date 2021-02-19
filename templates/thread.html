@@ -1,25 +1,59 @@
 <!DOCTYPE html>
 {% extends "layout.html" %}
 {% block content %}
+<style>
+table, th, td {
+    padding: 10px;
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    border-bottom: 1px solid black;
+}
+#mssg {
+    text-align: left;
+    width: 65%;
+}
+#sndr {
+    text-align: left;
+    width: 20%;
+}
+#edit {
+    width: 15%;
+}
+</style>
+<div class="column side">
+
+</div>
+<div class="column middle">
 <h2> {{ starter[0][0] }} </h2>
-<table>
-    <tbody>
-        <tr>
-            <td>{{ starter[0][1] }}</td>
-            <td><a href="/profile/{{ starter[0][3] }}">{{ starter[0][2] }}</a></td>
-        </tr>
-    </tbody>
-</table>
-<br>
-<hr>
+<div id="editMessage" style="display: none;">
+    <form action="/thread/edit_starter/{{ id }}" method="POST">
+        Viesti: <br>
+        <textarea name="content" rows="6" cols="40">{{ starter[0][1] }}</textarea><br>
+        <input type="submit" value="Muokkaa">
+    </form>
+</div>
 <table>
     <thead>
         <tr>
-            <th style="float: left;">Viesti</th>
-            <th>Lähettäjä</th>
+            <th id="mssg">Viestit:</th>
+            <th id="sndr">Lähettäjä:</th>
+            <th id="edit"></th>
         </tr>
     </thead>
     <tbody>
+        <tr>
+            <div id="startingMessage">
+            <td id="mssg">{{ starter[0][1] }}</td>
+            <td id="sndr"><a class="normal" href="/profile/{{ starter[0][3] }}">{{ starter[0][2] }}</a></td>
+            <td id="edit">
+                {% if session.user_id == starter[0][3] %}
+                <button onclick="editStart()">muokkaa</button>
+                {% endif %}
+            </td>
+            </div>
+        </tr>
         {% for message in messages %}
             <tr>
                 {% if message[2] == message_id %}
@@ -35,10 +69,10 @@
                     </tb>
                     
                 {% else %}
-                    <td>{{ message[0] }}</td>
-                    <td><a href="/profile/{{ message[1] }}">{{ message[3] }}</a></td>
+                    <td id="mssg"><a id="{{ message[2] }}"></a>{{ message[0] }}</td>
+                    <td id="sndr"><a class="normal" href="/profile/{{ message[1] }}">{{ message[3] }}</a></td>
+                    <td id="edit">
                     {% if session.user_id == message[1] or is_admin %}
-                        <td>
                         <form action="/thread/edit/{{ message[2] }}" method="POST">
                             <select name="option{{ message[2] }}" onchange="this.form.submit()">
                                 <option value="empty" selected> ...
@@ -47,13 +81,14 @@
                             </select>
                             <input type="hidden" name="thread_id" value="{{ id }}">
                         </form>
-                        </td>
-                        {% endif %}
                     {% endif %}
+                    </td>
+                {% endif %}
                 </tr>
             {% endfor %}
     </tbody>
 </table>
+<br>
 <form action="/thread/{{ id }}" method="POST">
 Uusi viesti: <br>
 {% if session.loggedin == True %}
@@ -64,10 +99,19 @@ Uusi viesti: <br>
 <br>
 <input type="submit" value="Lähetä">
 </form>
-{% endblock %}
+</div>
+<div class="column side">
+    {% if session.user_id %}
+    <form action="/save/{{ id }}" method="POST">
+        <input type="submit" name="save" value="Tallenna ketju">
+    </form>
+    {% endif %}
+</div>
 
 <script>
-function selection(value) {
-    console.log(value);
+function editStart() {
+    document.getElementById("startingMessage").style.display = "none";
+    document.getElementById("editMessage").style.display = "block";
 }
 </script>
+{% endblock %}

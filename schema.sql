@@ -3,4 +3,4 @@ CREATE TABLE threads (id SERIAL PRIMARY KEY, title TEXT, content TEXT, user_id I
 CREATE TABLE messages (id SERIAL PRIMARY KEY, content TEXT, thread_id INTEGER REFERENCES threads, user_id INTEGER REFERENCES users);
 CREATE TABLE friends (id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users, friend_id INTEGER REFERENCES users);
 CREATE TABLE privateThreads (id SERIAL PRIMARY KEY, thread_id INTEGER REFERENCES threads, user_id INTEGER REFERENCES users);
-CREATE TABLE follows (id SERIAL PRIMARY KEY, thread_id INTEGER REFERENCES threads, user_id INTEGER REFERENCES users);
+CREATE TABLE saved (id SERIAL PRIMARY KEY, thread_id INTEGER REFERENCES threads, user_id INTEGER REFERENCES users, UNIQUE(thread_id, user_id));
