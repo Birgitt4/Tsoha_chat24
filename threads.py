@@ -29,7 +29,7 @@ def add_user(user_id, thread_id):
     db.session.commit()
 
 def search(word):
-    sql = "SELECT id, title, content FROM threads WHERE (title LIKE :word OR content LIKE :message) AND privat=0 ORDER BY id"
+    sql = "SELECT id, title, content FROM threads WHERE (LOWER(title) LIKE LOWER(:word) OR LOWER(content) LIKE LOWER(:message)) AND privat=0 ORDER BY id"
     result = db.session.execute(sql, {"word":"%"+word+"%", "message":"%"+word+"%"})
     return result.fetchall()
 
