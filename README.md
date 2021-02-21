@@ -20,6 +20,8 @@ Voit testata sovellusta käyttäjillä testi1 ja testi2 (salasanat ovat sama kui
 
 Ystävien kesken voi tehdä yksityisiä aloituksia.
 
+ensimmäisen vertaisarvion ehdottama css tiedoston tekeminen!
+
 (profiilikuvat, jos aikaa jää)
 
 Sekä vielä tarkistuksia lomakkeisiin. Tällä hetkellä vain kirjautumisiin ja tunnuksen luomiseen on nämä tehty. Myös täytyy vielä kerrata materiaalien tietoturva asiat ja tarkastaa oma sovellus näiden suhteen. Täytynee myös siistiä koodia!
