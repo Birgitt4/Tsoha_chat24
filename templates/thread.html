@@ -102,8 +102,9 @@ Uusi viesti: <br>
 </div>
 <div class="column side">
     {% if session.user_id %}
+    <br>
     <form action="/save/{{ id }}" method="POST">
-        <input type="submit" name="save" value="Tallenna ketju">
+        <input class="button" type="submit" name="save" value="Tallenna ketju">
     </form>
     {% endif %}
 </div>

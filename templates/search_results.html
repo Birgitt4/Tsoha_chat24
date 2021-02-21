@@ -23,8 +23,8 @@
 </div>
 <div class="column middle">
     {% if from_t and from_m %}
-    <button onclick="titleSearch()">Aloitukset</button>
-    <button onclick="messageSearch()">Viestit</button>
+    <button class="button" onclick="titleSearch()">Aloitukset</button>
+    <button class="button" onclick="messageSearch()">Viestit</button>
     {% endif %}
     <div id="titles">
         {% for title in title_list %}

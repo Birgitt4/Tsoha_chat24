@@ -76,11 +76,25 @@ def save(thread_id):
     db.session.commit()
 
 def add_friend(friend_id):
+    sql = "SELECT COUNT(*) FROM friends WHERE user_id=:user_id AND friend_id=:friend_id"
+    result = db.session.execute(sql, {"user_id":user_id(), "friend_id":friend_id})
+    if result.first()[0] == 1:
+        return
     sql = "INSERT INTO friends (user_id, friend_id) VALUES (:user_id, :friend_id)"
     db.session.execute(sql, {"user_id":user_id(), "friend_id":friend_id})
+    db.session.commit()
+
+def delete_friend(id):
+    sql = "DELETE FROM friends WHERE user_id=:id AND friend_id=:user_id"
+    db.session.execute(sql, {"id":id, "user_id":user_id()})
     db.session.commit()
 
 def get_friends():
     sql = "SELECT U.username FROM users U, friends F WHERE U.id=F.friend_id AND F.user_id=:user_id"
     result = db.session.execute(sql, {"user_id":user_id()})
+    return result.fetchall()
+
+def get_friend_requests():
+    sql = "SELECT U.username, U.id FROM users U, friends A WHERE U.id=A.user_id AND A.friend_id=:user_id AND A.user_id NOT IN (SELECT B.friend_id FROM friends B WHERE B.user_id=:user_id)"
+    result = db.session.execute(sql, {"user_id":user_id(), "user_id":user_id()})
     return result.fetchall()

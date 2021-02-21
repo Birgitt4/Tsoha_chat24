@@ -97,23 +97,39 @@ def save(id):
 
 #Profiili
 
-@app.route("/profile/<int:user_id>")
+@app.route("/profile/<int:user_id>", methods=["get","post"])
 def profile(user_id):
-
+    if request.method == "POST":
+        users.add_friend(user_id)
     username = users.get_name(user_id)
     public_threads = users.get_threads(user_id, 0)
     private_threads = users.get_threads(user_id, 1)
     followed = users.get_saved(user_id)
+    friend_requests = users.get_friend_requests()
+    own_profile = False
+    if (user_id==users.user_id()):
+        own_profile = True
     return render_template("profile.html", username=username, public_threads=public_threads,
-    private_threads=private_threads, followed=followed)
+    private_threads=private_threads, followed=followed, f_requests=friend_requests, profile_id=user_id, own=own_profile)
 
 @app.route("/profile")
 def my_profile():
     if (users.logged() == False):
         return redirect("/")
-    user_id = users.user_id()
-    profile(user_id)
-    return redirect("profile/"+str(user_id))
+    profile(users.user_id())
+    return redirect("/profile/"+str(users.user_id()))
+
+@app.route("/add_friend/<int:id>", methods=["post"])
+def add_friend(id):
+    users.add_friend(id)
+    my_profile()
+    return redirect("/profile/"+str(users.user_id()))
+
+@app.route("/reject/<int:id>", methods=["post"])
+def delete_friend(id):
+    users.delete_friend(id)
+    my_profile()
+    return redirect("/profile/"+str(users.user_id()))
 
 #Sisään ja ulos kirjautumiset:
 

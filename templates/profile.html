@@ -2,42 +2,69 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="column side">
+    <br>
     {{ username }}
 </div>
 <div class="column middle">
-<button onclick="publicThreads()">Aloitukset</button>
-<button onclick="privateThreads()">Yksityiset</button>
-<button onclick="followedThreads()">Tallennetut</button>
-<br>
-<div id="public">
-{% for thread in public_threads %}
-<p>
-    <a class="normal" href="/thread/{{ thread[1] }}">{{ thread[0] }}</a>
-</p>
-<hr>
-{% endfor %}
+    <br>
+    <button class="button" onclick="publicThreads()">Aloitukset</button>
+    <button class="button" onclick="followedThreads()">Tallennetut</button>
+    {% if own %}
+        <button class="button" onclick="privateThreads()">Yksityiset</button>
+        <button class="button" onclick="friendRequests()">Kaveri pyynnöt</button>
+    {% endif %}
+    <br>
+    <div id="public">
+        {% for thread in public_threads %}
+        <p>
+            <a class="normal" href="/thread/{{ thread[1] }}">{{ thread[0] }}</a>
+        </p>
+        <hr>
+        {% endfor %}
+    </div>
+    <div id="private" style="display: none;">
+        {% for thread in private_threads %}
+        <p>
+            <a class="normal" href="/thread/{{ thread[1] }}">{{ thread[0] }}</a>
+        </p>
+        <hr>
+        {% endfor %}
+    </div>
+    <div id="followed" style="display: none;">
+        {% for thread in followed %}
+        <p>
+            <a class="normal" href="/thread/{{ thread[1] }}">{{ thread[0] }}</a>
+        </p>
+        <hr>
+        {% endfor %}
+    </div>
+    <div id="requests" style="display: none;">
+        {% for user in f_requests %}
+        <p></p>
+        <a class="normal" href="/profile/{{ user[1] }}">{{ user[0] }}</a>
+        <form action="/add_friend/{{ user[1] }}" method="POST" style="display: inline;">
+            <button class="button" type="submit">Hyväksy</button>
+        </form>
+        <form action="/reject/{{ user[1] }}" method="POST" style="display: inline;">
+            <button class="button" type="submit">Hylkää</button>
+        </form>
+        {% endfor %}
+    </div>
 </div>
-<div id="private" style="display: none;">
-{% for thread in private_threads %}
-<p>
-    <a class="normal" href="/thread/{{ thread[1] }}">{{ thread[0] }}</a>
-</p>
-<hr>
-{% endfor %}
+<div class="column side">
+    <br>
+    {% if not own %}
+    <form action="/profile/{{ profile_id }}" method="POST">
+        <input class="button" type="submit" value="Lisää kaveriksi"></button>
+    </form>
+    {% endif %}
 </div>
-<div id="followed" style="display: none;">
-{% for thread in followed %}
-<p>
-    <a class="normal" href="/thread/{{ thread[1] }}">{{ thread[0] }}</a>
-</p>
-<hr>
-{% endfor %}
-</div>
-</div>
+
 <script>
 function publicThreads() {
     document.getElementById("private").style.display = "none";
     document.getElementById("followed").style.display = "none";
+    document.getElementById("requests").style.display ="none";
     var x = document.getElementById("public");
     if (x.style.display == "none") {
         x.style.display = "block";
@@ -46,6 +73,7 @@ function publicThreads() {
 function privateThreads() {
     document.getElementById("public").style.display = "none";
     document.getElementById("followed").style.display = "none";
+    document.getElementById("requests").style.display ="none";
     var x = document.getElementById("private");
     if (x.style.display == "none") {
         x.style.display = "block";
@@ -54,7 +82,17 @@ function privateThreads() {
 function followedThreads() {
     document.getElementById("private").style.display = "none";
     document.getElementById("public").style.display = "none";
+    document.getElementById("requests").style.display ="none";
     var x = document.getElementById("followed");
+    if (x.style.display == "none") {
+        x.style.display = "block";
+    }
+}
+function friendRequests() {
+    document.getElementById("private").style.display = "none";
+    document.getElementById("public").style.display = "none";
+    document.getElementById("followed").style.display = "none";
+    var x = document.getElementById("requests");
     if (x.style.display == "none") {
         x.style.display = "block";
     }
