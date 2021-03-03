@@ -106,6 +106,12 @@ Uusi viesti: <br>
     <form action="/save/{{ id }}" method="POST">
         <input class="button" type="submit" name="save" value="Tallenna ketju">
     </form>
+    <br>
+    {% if starter[0][4] == 1 and session.user_id == starter[0][3] %}
+    <form action="/friendlist/{{ id }}" method="GET">
+        <input class="button" type="submit" name="add" value="Lisää kavereita">
+    </form>
+    {% endif %}
     {% endif %}
 </div>
 

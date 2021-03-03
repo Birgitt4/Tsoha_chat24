@@ -51,22 +51,42 @@ def starter_edit(id):
     threads.edit_content(id, content)
     return redirect("/thread/"+str(id))
 
+@app.route("/friendlist/<int:id>", methods=["get","post"])
+def add_friends_to_thread(id):
+    if request.method == "POST":
+        return redirect("/thread/"+str(id))
+    friends = users.get_friends(id)
+    for friend in friends:
+        print(friend[0])
+    starter = threads.get_thread(id)
+    title = starter[0][0]
+    return render_template("add_f_to_threads.html", friends=friends, title=title, id=id)
+
+@app.route("/add_friends_to_thread/<int:id>", methods=["get", "post"])
+def add_f(id):
+    friend = request.form["friend"]
+    friend_id = request.form[friend]
+    threads.add_user(friend_id, id)
+    return redirect("/friendlist/"+str(id))
+
 @app.route("/new_thread")
 def new():
     if users.logged() != True:
         return redirect("/login")
-    return render_template("new_thread.html")
+    return render_template("new_thread.html", error=False, title="")
 
 @app.route("/send", methods=["post"])
 def send_thread():
     title = request.form["title"]
     content = request.form["content"]
-    #mahdollisuus luoda privaatti thread
-    thread_id = threads.new_thread(title, content, 0)
-    print(thread_id)
+    privat = request.form["private"]
+    thread_id = 0
+    if int(privat) == 0:
+        thread_id = threads.new_thread(title, content, 0)
+    if int(privat) == 1:
+        thread_id = threads.new_thread(title, content, 1)
     if thread_id == 0:
-        #error viesti ? kirjautumaton käyttäjä
-        return redirect("/")
+        return render_template("new_thread.html", error=True, title=title, content=content)
     return redirect("/thread/"+str(thread_id))
 
 @app.route("/search", methods=["get","post"])

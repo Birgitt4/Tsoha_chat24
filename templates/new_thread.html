@@ -5,12 +5,21 @@
     
 </div>
 <div class="column middle">
-<form action="/send" method="POST">
-Otsikko: <input type="text" name="title"> <br>
-Viesti: <br>
-<textarea name="content" rows="6" cols="40">
-</textarea><br>
-<input class="button" type="submit" value="Lähetä">
-</form>
+    {% if error %}
+    Jokin meni vikaan. Yritä uudelleen.
+    {% endif %}
+    <form action="/send" method="POST">
+        Otsikko: <br>
+        <input type="text" name="title" value="{{ title }}"> <br>
+        Viesti: <br>
+        <textarea name="content" rows="6" cols="70">{% if error %}{{ content }}{% endif %}</textarea>
+        <br>
+        <input type="radio" id="pu" name="private" value="0" checked>
+        <label for="pu">Julkinen</label><br>
+        <input type="radio" id="pr" name="private" value="1">
+        <label for="p">Yksityinen</label><br>
+        <br>
+        <input class="button" type="submit" value="Lähetä">
+    </form>
 </div>
 {% endblock %}

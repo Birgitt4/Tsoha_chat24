@@ -57,9 +57,14 @@ def get_name(id):
     return result.first()[0]
 
 def get_threads(user_id, privat):
-    sql = "SELECT title, id FROM threads WHERE user_id=:user_id AND privat=:privat"
-    result = db.session.execute(sql, {"user_id":user_id, "privat":privat})
-    return result.fetchall()
+    if privat == 0:
+        sql = "SELECT title, id FROM threads WHERE user_id=:user_id AND privat=:privat"
+        result = db.session.execute(sql, {"user_id":user_id, "privat":privat})
+        return result.fetchall()
+    else:
+        sql = "SELECT T.title, T.id FROM threads T, privateThreads P WHERE P.user_id=:user_id AND T.id=P.thread_id"
+        result = db.session.execute(sql, {"user_id":user_id})
+        return result.fetchall()
 
 def get_saved(user_id):
     sql = "SELECT T.title, T.id FROM threads T, saved S WHERE S.user_id=:user_id AND T.id=S.thread_id"   
@@ -89,9 +94,9 @@ def delete_friend(id):
     db.session.execute(sql, {"id":id, "user_id":user_id()})
     db.session.commit()
 
-def get_friends():
-    sql = "SELECT U.username FROM users U, friends F WHERE U.id=F.friend_id AND F.user_id=:user_id"
-    result = db.session.execute(sql, {"user_id":user_id()})
+def get_friends(thread_id):
+    sql = "SELECT U.username, U.id FROM users U, friends F, friends X WHERE U.id=F.friend_id AND F.user_id=:user_id AND F.user_id=X.friend_id AND F.friend_id=X.user_id AND F.friend_id NOT IN (SELECT P.user_id FROM privateThreads P WHERE P.thread_id=:thread_id) ORDER BY U.username"
+    result = db.session.execute(sql, {"user_id":user_id(), "thread_id":thread_id})
     return result.fetchall()
 
 def get_friend_requests():

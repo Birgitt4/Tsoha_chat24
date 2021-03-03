@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block content %}
+<style>
+.friend {
+    border: none;
+    background-color: transparent;
+    text-decoration: none;
+    padding: 10px;
+    min-width: 100px;
+    text-align: left;
+}
+.friend:hover {
+    background-color: darkgray;
+}
+</style>
+<div class="column side">
+
+</div>
+<div class="column middle">
+    <h2> {{ title }} </h2>
+    <form action="/add_friends_to_thread/{{ id }}" method="POST">
+        {% for friend in friends %}
+        <input class="friend" type="submit" name="friend" value="{{ friend[0] }}">
+        <input type="hidden" name="{{ friend[0] }}" value="{{ friend[1] }}">
+        <br>
+        {% endfor %}
+    </form>
+</div>
+<div class="column side">
+    <br>
+    <form action="/friendlist/{{ id }}" method="POST">
+        <input class="button" type="submit" name="back" value="Takaisin">
+    </form>
+</div>
+{% endblock %}

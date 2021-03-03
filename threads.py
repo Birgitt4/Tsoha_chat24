@@ -7,7 +7,7 @@ def get_threads():
     return result.fetchall()
 
 def get_thread(id):
-    sql = "SELECT T.title, T.content, U.username, T.user_id FROM threads T, users U WHERE T.id=:id AND U.id=T.user_id"
+    sql = "SELECT T.title, T.content, U.username, T.user_id, T.privat FROM threads T, users U WHERE T.id=:id AND U.id=T.user_id"
     result = db.session.execute(sql, {"id":id})
     return result.fetchall()
 
