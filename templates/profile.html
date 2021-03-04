@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% extends "layout.html" %}
+<link rel="stylesheet" href="/static/css/layout.css">
 {% block content %}
 <div class="column side">
     <br>
@@ -40,23 +41,26 @@
     </div>
     <div id="requests" style="display: none;">
         {% for user in f_requests %}
-        <p></p>
-        <a class="normal" href="/profile/{{ user[1] }}">{{ user[0] }}</a>
-        <form action="/add_friend/{{ user[1] }}" method="POST" style="display: inline;">
-            <button class="button" type="submit">Hyväksy</button>
-        </form>
-        <form action="/reject/{{ user[1] }}" method="POST" style="display: inline;">
-            <button class="button" type="submit">Hylkää</button>
-        </form>
+        <p>
+            <a class="normal" href="/profile/{{ user[1] }}">{{ user[0] }}</a>
+            <form action="/add_friend/{{ user[1] }}" method="POST" style="display: inline;">
+                <button class="button" type="submit">Hyväksy</button>
+            </form>
+            <form action="/reject/{{ user[1] }}" method="POST" style="display: inline;">
+                <button class="button" type="submit">Hylkää</button>
+            </form>
+        </p>
         {% endfor %}
     </div>
 </div>
 <div class="column side">
     <br>
-    {% if not own %}
-    <form action="/profile/{{ profile_id }}" method="POST">
-        <input class="button" type="submit" value="Lisää kaveriksi"></button>
-    </form>
+    {% if session.loggedin %}
+        {% if not own %}
+        <form action="/profile/{{ profile_id }}" method="POST">
+            <input class="button" type="submit" value="Lisää kaveriksi"></button>
+        </form>
+        {% endif %}
     {% endif %}
 </div>
 

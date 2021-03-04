@@ -33,9 +33,7 @@ def signup(username, password):
 def username_taken(username):
     sql = "SELECT COUNT(*) FROM users WHERE username=:username"
     result = db.session.execute(sql, {"username":username})
-    if result.first()[0] == 1:
-        return True
-    return False
+    return result.first()[0] == 1
 
 def user_id():
     return session.get("user_id", 0)
@@ -46,10 +44,7 @@ def logged():
 def is_admin():
     sql = "SELECT status FROM users WHERE id=:user_id"
     result = db.session.execute(sql, {"user_id":session.get("user_id")})
-    if result.first()[0] == "admin":
-        return True
-    else:
-        return False
+    return result.first()[0] == "admin"
 
 def get_name(id):
     sql = "SELECT username FROM users WHERE id=:id"
@@ -62,12 +57,14 @@ def get_threads(user_id, privat):
         result = db.session.execute(sql, {"user_id":user_id, "privat":privat})
         return result.fetchall()
     else:
-        sql = "SELECT T.title, T.id FROM threads T, privateThreads P WHERE P.user_id=:user_id AND T.id=P.thread_id"
+        sql = """SELECT T.title, T.id FROM threads T, privateThreads P WHERE 
+                P.user_id=:user_id AND T.id=P.thread_id"""
         result = db.session.execute(sql, {"user_id":user_id})
         return result.fetchall()
 
 def get_saved(user_id):
-    sql = "SELECT T.title, T.id FROM threads T, saved S WHERE S.user_id=:user_id AND T.id=S.thread_id"   
+    sql = """SELECT T.title, T.id FROM threads T, saved S WHERE 
+            S.user_id=:user_id AND T.id=S.thread_id"""
     result = db.session.execute(sql, {"user_id":user_id})
     return result.fetchall()
 
@@ -94,12 +91,24 @@ def delete_friend(id):
     db.session.execute(sql, {"id":id, "user_id":user_id()})
     db.session.commit()
 
+#This will fetch friends of a logged in user who are not in the thread.
+#Only "real" friends not friendrequests
 def get_friends(thread_id):
-    sql = "SELECT U.username, U.id FROM users U, friends F, friends X WHERE U.id=F.friend_id AND F.user_id=:user_id AND F.user_id=X.friend_id AND F.friend_id=X.user_id AND F.friend_id NOT IN (SELECT P.user_id FROM privateThreads P WHERE P.thread_id=:thread_id) ORDER BY U.username"
+    sql = """SELECT U.username, U.id FROM users U, friends F, friends X WHERE 
+            U.id=F.friend_id AND F.user_id=:user_id AND F.user_id=X.friend_id AND 
+            F.friend_id=X.user_id AND F.friend_id NOT IN (SELECT P.user_id FROM 
+            privateThreads P WHERE P.thread_id=:thread_id) ORDER BY U.username"""
     result = db.session.execute(sql, {"user_id":user_id(), "thread_id":thread_id})
     return result.fetchall()
 
 def get_friend_requests():
-    sql = "SELECT U.username, U.id FROM users U, friends A WHERE U.id=A.user_id AND A.friend_id=:user_id AND A.user_id NOT IN (SELECT B.friend_id FROM friends B WHERE B.user_id=:user_id)"
+    sql = """SELECT U.username, U.id FROM users U, friends A WHERE U.id=A.user_id 
+            AND A.friend_id=:user_id AND A.user_id NOT IN 
+            (SELECT B.friend_id FROM friends B WHERE B.user_id=:user_id)"""
     result = db.session.execute(sql, {"user_id":user_id(), "user_id":user_id()})
     return result.fetchall()
+
+def private_access(thread_id):
+    sql = "SELECT COUNT(*) FROM privateThreads WHERE thread_id=:thread_id AND user_id=:user_id"
+    result = db.session.execute(sql, {"thread_id":thread_id, "user_id":user_id()})
+    return result.first()[0] == 1

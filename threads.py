@@ -7,15 +7,22 @@ def get_threads():
     return result.fetchall()
 
 def get_thread(id):
-    sql = "SELECT T.title, T.content, U.username, T.user_id, T.privat FROM threads T, users U WHERE T.id=:id AND U.id=T.user_id"
+    sql = """SELECT T.title, T.content, U.username, T.user_id, T.privat FROM threads T, 
+            users U WHERE T.id=:id AND U.id=T.user_id"""
     result = db.session.execute(sql, {"id":id})
     return result.fetchall()
+
+def is_private(id):
+    sql = "SELECT privat FROM threads WHERE id=:id"
+    result = db.session.execute(sql, {"id":id})
+    return result.first()[0]
 
 def new_thread(title, content, privat):
     user_id = users.user_id()
     if user_id == 0:
         return 0
-    sql = "INSERT INTO threads (title, content, user_id, privat) VALUES (:title, :content, :user_id, :privat) RETURNING id"
+    sql = """INSERT INTO threads (title, content, user_id, privat) VALUES 
+            (:title, :content, :user_id, :privat) RETURNING id"""
     result = db.session.execute(sql, {"title":title, "content":content, "user_id":user_id, "privat":privat})
     db.session.commit()
     thread_id = result.fetchone()[0]
@@ -29,7 +36,8 @@ def add_user(user_id, thread_id):
     db.session.commit()
 
 def search(word):
-    sql = "SELECT id, title, content FROM threads WHERE (LOWER(title) LIKE LOWER(:word) OR LOWER(content) LIKE LOWER(:message)) AND privat=0 ORDER BY id"
+    sql = """SELECT id, title, content FROM threads WHERE (LOWER(title) LIKE LOWER(:word) 
+            OR LOWER(content) LIKE LOWER(:message)) AND privat=0 ORDER BY id"""
     result = db.session.execute(sql, {"word":"%"+word+"%", "message":"%"+word+"%"})
     return result.fetchall()
 

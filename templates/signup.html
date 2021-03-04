@@ -1,19 +1,19 @@
+<!DOCTYPE html>
 {% extends "layout.html" %}
+<link rel="stylesheet" href="/static/css/layout.css">
 {% block content %}
 <div class="column side">
 
 </div>
 <div class="column middle">
-{% if error: %}
-    <p>{{ message }}</p>
-{% endif %}
-<form action="/signup" method="post">
-Tunnus: <input type="text" name="username">
-<p>
-Salasana: <input type="password" name="password">
-<p>
-Salasana uudelleen: <input type="password" name="passcheck">
-<input type="submit" value="Luo tunnus">
-</form>
+    {% if error: %}
+        <p>{{ message }}</p>
+    {% endif %}
+    <form action="/signup" method="post">
+        <p>Tunnus: <input type="text" name="username" required></p>
+        <p>Salasana: <input type="password" name="password" required></p>
+        <p>Salasana uudelleen: <input type="password" name="passcheck" required></p>
+        <input type="submit" value="Luo tunnus">
+    </form>
 </div>
 {% endblock %}

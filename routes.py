@@ -7,10 +7,19 @@ import threads
 @app.route("/")
 def home():
     list = threads.get_threads()
-    return render_template("home.html", threads = list)
+    return render_template("home.html", threads=list)
 
-@app.route("/thread/<int:id>", methods=["get","post"])
+@app.route("/thread/<int:id>", methods=["get", "post"])
 def thread(id):
+    allow = False
+    list = messages.get_messages(id)
+    starter = threads.get_thread(id)
+    if starter[0][4] == 1:
+        if users.logged():
+            if users.private_access(id):
+                allow = True
+    elif starter[0][4] == 0:
+        allow = True
     if request.method == "POST":
         content = request.form["content"]
         if (content != ""):
@@ -19,22 +28,22 @@ def thread(id):
         is_admin = users.is_admin()
     else:
         is_admin = False
-    list = messages.get_messages(id)
-    starter = threads.get_thread(id)
-    return render_template("thread.html", starter = starter, messages = list, id = id, is_admin = is_admin, message_id = 0)
+    return render_template("thread.html", starter=starter, messages=list, id=id, 
+        is_admin=is_admin, message_id=0, allow=allow)
 
-@app.route("/thread/edit/<int:id>", methods=["get","post"])
+@app.route("/thread/edit/<int:id>", methods=["get", "post"])
 def del_or_edit(id):
     option = request.form["option"+str(id)]
     thrd = request.form["thread_id"]
     if (option != "empty"):
         if option == "delete":
             messages.delete(id)
-        if option == "edit":
+        elif option == "edit":
             is_admin = users.is_admin()
             list = messages.get_messages(thrd)
             starter = threads.get_thread(thrd)
-            return render_template("thread.html", starter = starter, messages = list, id = thrd, is_admin = is_admin, message_id = id)
+            return render_template("thread.html", starter=starter, messages=list, 
+                id=thrd, is_admin=is_admin, message_id=id, allow=True)
     return redirect("/thread/"+str(thrd))
 
 @app.route("/thread/edit", methods=["get","post"])
@@ -45,24 +54,39 @@ def edit():
     messages.edit(message_id, content)
     return redirect("/thread/"+str(thrd))
 
-@app.route("/thread/edit_starter/<int:id>", methods=["get","post"])
+@app.route("/thread/edit_starter/<int:id>", methods=["get", "post"])
 def starter_edit(id):
     content = request.form["content"]
     threads.edit_content(id, content)
     return redirect("/thread/"+str(id))
 
-@app.route("/friendlist/<int:id>", methods=["get","post"])
-def add_friends_to_thread(id):
-    if request.method == "POST":
-        return redirect("/thread/"+str(id))
-    friends = users.get_friends(id)
-    for friend in friends:
-        print(friend[0])
-    starter = threads.get_thread(id)
-    title = starter[0][0]
-    return render_template("add_f_to_threads.html", friends=friends, title=title, id=id)
+@app.route("/save/<int:id>", methods=["get", "post"])
+def save(id):
+    allow = False
+    if users.logged():
+        if threads.is_private:
+            allow = False
+        else:
+            allow = True
+        if allow:
+            users.save(id)
+    return redirect("/thread/"+str(id))
 
-@app.route("/add_friends_to_thread/<int:id>", methods=["get", "post"])
+@app.route("/friendlist/<int:id>", methods=["get", "post"])
+def friends_to_thread(id):
+    allow = False
+    if threads.get_thread(id)[0][3] == users.user_id():
+        allow = True
+    if allow:
+        if request.method == "POST":
+            return redirect("/thread/"+str(id))
+        friends = users.get_friends(id)
+        starter = threads.get_thread(id)
+        title = starter[0][0]
+        return render_template("friendlist.html", friends=friends, title=title, id=id)
+    return redirect("/thread/"+str(id))
+
+@app.route("/add_friends/<int:id>", methods=["get", "post"])
 def add_f(id):
     friend = request.form["friend"]
     friend_id = request.form[friend]
@@ -75,7 +99,7 @@ def new():
         return redirect("/login")
     return render_template("new_thread.html", error=False, title="")
 
-@app.route("/send", methods=["post"])
+@app.route("/send", methods=["get", "post"])
 def send_thread():
     title = request.form["title"]
     content = request.form["content"]
@@ -89,7 +113,7 @@ def send_thread():
         return render_template("new_thread.html", error=True, title=title, content=content)
     return redirect("/thread/"+str(thread_id))
 
-@app.route("/search", methods=["get","post"])
+@app.route("/search", methods=["get", "post"])
 def search():
     srch_word = request.form["srch"]
     if srch_word == "":
@@ -106,18 +130,11 @@ def search():
     if m == "m":
         from_m = True
         message_list = messages.search(srch_word)
-    return render_template("search_results.html", title_list=title_list, message_list=message_list, from_m=from_m, from_t=from_t)
-
-@app.route("/save/<int:id>", methods=["get","post"])
-def save(id):
-    if users.logged():
-        users.save(id)
-    return redirect("/thread/"+str(id))
+    return render_template("search_results.html", title_list=title_list, 
+        message_list=message_list, from_m=from_m, from_t=from_t)
 
 
-#Profiili
-
-@app.route("/profile/<int:user_id>", methods=["get","post"])
+@app.route("/profile/<int:user_id>", methods=["get", "post"])
 def profile(user_id):
     if request.method == "POST":
         users.add_friend(user_id)
@@ -127,10 +144,11 @@ def profile(user_id):
     followed = users.get_saved(user_id)
     friend_requests = users.get_friend_requests()
     own_profile = False
-    if (user_id==users.user_id()):
+    if (user_id == users.user_id()):
         own_profile = True
     return render_template("profile.html", username=username, public_threads=public_threads,
-    private_threads=private_threads, followed=followed, f_requests=friend_requests, profile_id=user_id, own=own_profile)
+        private_threads=private_threads, followed=followed, f_requests=friend_requests, 
+        profile_id=user_id, own=own_profile)
 
 @app.route("/profile")
 def my_profile():
@@ -139,19 +157,18 @@ def my_profile():
     profile(users.user_id())
     return redirect("/profile/"+str(users.user_id()))
 
-@app.route("/add_friend/<int:id>", methods=["post"])
+@app.route("/add_friend/<int:id>", methods=["get", "post"])
 def add_friend(id):
     users.add_friend(id)
     my_profile()
     return redirect("/profile/"+str(users.user_id()))
 
-@app.route("/reject/<int:id>", methods=["post"])
+@app.route("/reject/<int:id>", methods=["get", "post"])
 def delete_friend(id):
     users.delete_friend(id)
     my_profile()
     return redirect("/profile/"+str(users.user_id()))
 
-#Sisään ja ulos kirjautumiset:
 
 @app.route("/login", methods=["get", "post"])
 def login():
@@ -163,7 +180,8 @@ def login():
         if users.login(username, password):
             return redirect("/")
         else:
-            return render_template("login.html", error=True, message="Väärä tunnus tai salasana")
+            message = "Väärä tunnus tai salasana"
+            return render_template("login.html", error=True, message=message)
 
 @app.route("/logout")
 def logout():

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% extends "layout.html" %}
+<link rel="stylesheet" href="/static/css/layout.css">
 {% block content %}
 <style>
 table, th, td {
@@ -13,6 +14,7 @@ th, td {
 #mssg {
     text-align: left;
     width: 65%;
+    white-space: pre-line;
 }
 #sndr {
     text-align: left;
@@ -26,39 +28,39 @@ th, td {
 
 </div>
 <div class="column middle">
-<h2> {{ starter[0][0] }} </h2>
-<div id="editMessage" style="display: none;">
-    <form action="/thread/edit_starter/{{ id }}" method="POST">
-        Viesti: <br>
-        <textarea name="content" rows="6" cols="40">{{ starter[0][1] }}</textarea><br>
-        <input type="submit" value="Muokkaa">
-    </form>
-</div>
-<table>
-    <thead>
-        <tr>
-            <th id="mssg">Viestit:</th>
-            <th id="sndr">Lähettäjä:</th>
-            <th id="edit"></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <div id="startingMessage">
-            <td id="mssg">{{ starter[0][1] }}</td>
-            <td id="sndr"><a class="normal" href="/profile/{{ starter[0][3] }}">{{ starter[0][2] }}</a></td>
-            <td id="edit">
-                {% if session.user_id == starter[0][3] %}
-                <button onclick="editStart()">muokkaa</button>
-                {% endif %}
-            </td>
-            </div>
-        </tr>
-        {% for message in messages %}
+    {% if allow %}
+    <h2> {{ starter[0][0] }} </h2>
+    <div id="editMessage" style="display: none;">
+        <form action="/thread/edit_starter/{{ id }}" method="POST">
+            Viesti: <br>
+            <textarea name="content" rows="6" cols="40">{{ starter[0][1] }}</textarea><br>
+            <input type="submit" value="Muokkaa">
+        </form>
+    </div>
+    <table>
+        <thead>
             <tr>
-                {% if message[2] == message_id %}
-                    
-                    <tb>
+                <th id="mssg">Viestit:</th>
+                <th id="sndr">Lähettäjä:</th>
+                <th id="edit"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <div id="startingMessage">
+                    <td id="mssg">{{ starter[0][1] }}</td>
+                    <td id="sndr"><a class="normal" href="/profile/{{ starter[0][3] }}">{{ starter[0][2] }}</a></td>
+                    <td id="edit">
+                        {% if session.user_id == starter[0][3] %}
+                            <button onclick="editStart()">muokkaa</button>
+                        {% endif %}
+                    </td>
+                </div>
+            </tr>
+            {% for message in messages %}
+            <tr>
+                {% if message[2] == message_id %}        
+                <tb>
                     <form action="/thread/edit" method="POST">
                         Viesti: <br>
                         <textarea name="content" rows="6" cols="40">{{ message[0] }}</textarea><br>
@@ -66,8 +68,7 @@ th, td {
                         <input type="hidden" name="thread_id" value="{{ id }}">
                         <input type="hidden" name="message_id" value="{{ message_id }}">
                     </form>
-                    </tb>
-                    
+                </tb>            
                 {% else %}
                     <td id="mssg"><a id="{{ message[2] }}"></a>{{ message[0] }}</td>
                     <td id="sndr"><a class="normal" href="/profile/{{ message[1] }}">{{ message[3] }}</a></td>
@@ -84,34 +85,39 @@ th, td {
                     {% endif %}
                     </td>
                 {% endif %}
-                </tr>
+            </tr>
             {% endfor %}
-    </tbody>
-</table>
-<br>
-<form action="/thread/{{ id }}" method="POST">
-Uusi viesti: <br>
-{% if session.loggedin == True %}
-<textarea name="content" rows="6" cols="40"></textarea>
-{% else %}
-<textarea name="content" rows="6" cols="40">Kirjaudu sisään kommentoidaksesi</textarea>
-{% endif %}
-<br>
-<input type="submit" value="Lähetä">
-</form>
+        </tbody>
+    </table>
+    <br>
+    <form action="/thread/{{ id }}" method="POST">
+        Uusi viesti: <br>
+        {% if session.loggedin == True %}
+            <textarea name="content" rows="6" cols="40"></textarea>
+        {% else %}
+            <textarea name="content" rows="6" cols="40">Kirjaudu sisään kommentoidaksesi</textarea>
+        {% endif %}
+        <br>
+        <input type="submit" value="Lähetä">
+    </form>
+    {% else %}
+    <h1 style="color: black;">Sinulla ei ole oikeuksia tälle sivustolle</h1>
+    {% endif %}
 </div>
 <div class="column side">
-    {% if session.user_id %}
-    <br>
-    <form action="/save/{{ id }}" method="POST">
-        <input class="button" type="submit" name="save" value="Tallenna ketju">
-    </form>
-    <br>
-    {% if starter[0][4] == 1 and session.user_id == starter[0][3] %}
-    <form action="/friendlist/{{ id }}" method="GET">
-        <input class="button" type="submit" name="add" value="Lisää kavereita">
-    </form>
-    {% endif %}
+    {% if allow %}
+        {% if session.user_id %}
+            <br>
+            <form action="/save/{{ id }}" method="POST">
+                <input class="button" type="submit" name="save" value="Tallenna ketju">
+            </form>
+            <br>
+            {% if starter[0][4] == 1 and session.user_id == starter[0][3] %}
+                <form action="/friendlist/{{ id }}" method="GET">
+                    <input class="button" type="submit" name="add" value="Lisää kavereita">
+                </form>
+            {% endif %}
+        {% endif %}
     {% endif %}
 </div>
 

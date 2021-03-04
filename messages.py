@@ -7,7 +7,8 @@ def get_sender(id):
     return result.fetchall()[0][0]
 
 def get_messages(id):
-    sql = "SELECT M.content, M.user_id, M.id, U.username FROM messages M, users U WHERE M.thread_id=:id AND M.user_id=U.id ORDER BY M.id"
+    sql = """SELECT M.content, M.user_id, M.id, U.username FROM messages M, 
+            users U WHERE M.thread_id=:id AND M.user_id=U.id ORDER BY M.id"""
     result = db.session.execute(sql, {"id":id})
     return result.fetchall()
 
@@ -38,6 +39,7 @@ def edit(message_id, content):
         db.session.commit()
 
 def search(word):
-    sql = "SELECT T.id, M.id, M.content FROM threads T, messages M WHERE LOWER(M.content) LIKE LOWER(:word) AND T.id=M.thread_id AND T.privat=0"
+    sql = """SELECT T.id, M.id, M.content FROM threads T, messages M WHERE 
+            LOWER(M.content) LIKE LOWER(:word) AND T.id=M.thread_id AND T.privat=0"""
     result = db.session.execute(sql, {"word":"%"+word+"%"})
     return result.fetchall()
