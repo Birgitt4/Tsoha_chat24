@@ -10,10 +10,27 @@
         <p>{{ message }}</p>
     {% endif %}
     <form action="/signup" method="post">
-        <p>Tunnus: <input type="text" name="username" required></p>
-        <p>Salasana: <input type="password" name="password" required></p>
+        <p>Tunnus: <input type="text" name="username" required onsubmit="return checkUser(this)"></p>
+        <p>Salasana: <input type="password" name="password" required onsubmit="return checkPassword(this)"></p>
         <p>Salasana uudelleen: <input type="password" name="passcheck" required></p>
         <input type="submit" value="Luo tunnus">
     </form>
 </div>
+
+<script>
+function checkUser(form) {
+    if (form.username.value.length > 30) {
+        alert("Käyttäjänimi on liian pitkä");
+        return false;
+    }
+    return true;
+}
+function checkPassword(form) {
+    if (form.password.value.length < 6) {
+        alert("Salasanan on oltava vähintään 6 merkkiä");
+        return false;
+    }
+    return true;
+}
+</script>
 {% endblock %}

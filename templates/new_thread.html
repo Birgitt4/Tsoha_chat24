@@ -7,7 +7,7 @@
 </div>
 <div class="column middle">
     {% if error %}
-    Jokin meni vikaan. Yritä uudelleen.
+        <h2>{{ message }}</h2>
     {% endif %}
     <form action="/send" method="POST">
         Otsikko: <br>
@@ -19,6 +19,7 @@
         <label for="pu">Julkinen</label><br>
         <input type="radio" id="pr" name="private" value="1">
         <label for="p">Yksityinen</label><br>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <br>
         <input class="button" type="submit" value="Lähetä">
     </form>

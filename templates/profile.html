@@ -45,9 +45,11 @@
             <a class="normal" href="/profile/{{ user[1] }}">{{ user[0] }}</a>
             <form action="/add_friend/{{ user[1] }}" method="POST" style="display: inline;">
                 <button class="button" type="submit">Hyväksy</button>
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             </form>
             <form action="/reject/{{ user[1] }}" method="POST" style="display: inline;">
                 <button class="button" type="submit">Hylkää</button>
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             </form>
         </p>
         {% endfor %}
@@ -59,6 +61,7 @@
         {% if not own %}
         <form action="/profile/{{ profile_id }}" method="POST">
             <input class="button" type="submit" value="Lisää kaveriksi"></button>
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         </form>
         {% endif %}
     {% endif %}

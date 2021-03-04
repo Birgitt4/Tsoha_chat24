@@ -24,13 +24,14 @@
         {% for friend in friends %}
         <input class="friend" type="submit" name="friend" value="{{ friend[0] }}">
         <input type="hidden" name="{{ friend[0] }}" value="{{ friend[1] }}">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         <br>
         {% endfor %}
     </form>
 </div>
 <div class="column side">
     <br>
-    <form action="/friendlist/{{ id }}" method="POST">
+    <form action="/thread/{{ id }}" method="GET">
         <input class="button" type="submit" name="back" value="Takaisin">
     </form>
 </div>
