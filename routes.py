@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, abort, session
 import users
 import messages
 import threads
@@ -43,9 +43,8 @@ def error(e):
 
 @app.route("/thread/add/<int:id>", methods=["get", "post"])
 def new_message(id):
-    if users.session["csrf_token"] != request.form["csrf_token"]:
-        #abort
-        pass
+    if session["csrf_token"] != request.form["csrf_token"]:
+        return abort(403)
     e = 0
     content = request.form["content"]
     if not users.logged():
@@ -72,9 +71,8 @@ def del_or_edit(id):
 
 @app.route("/thread/edit", methods=["get","post"])
 def edit():
-    if users.session["csrf_token"] != request.form["csrf_token"]:
-        #abort
-        pass
+    if session["csrf_token"] != request.form["csrf_token"]:
+        return abort(403)
     e = 0
     message_id = request.form["message_id"]
     thrd = request.form["thread_id"]
@@ -89,9 +87,8 @@ def edit():
 
 @app.route("/thread/edit_starter/<int:id>", methods=["get", "post"])
 def starter_edit(id):
-    if users.session["csrf_token"] != request.form["csrf_token"]:
-        #abort
-        pass
+    if session["csrf_token"] != request.form["csrf_token"]:
+        return abort(403)
     content = request.form["content"]
     e = 0
     if len(content) > 500:
@@ -129,9 +126,8 @@ def friends_to_thread(id):
 
 @app.route("/add_friends/<int:id>", methods=["get", "post"])
 def add_f(id):
-    if users.session["csrf_token"] != request.form["csrf_token"]:
-        #abort
-        pass
+    if session["csrf_token"] != request.form["csrf_token"]:
+        return abort(403)
     friend = request.form["friend"]
     friend_id = request.form[friend]
     threads.add_user(friend_id, id)
@@ -145,9 +141,8 @@ def new():
 
 @app.route("/send", methods=["get", "post"])
 def send_thread():
-    if users.session["csrf_token"] != request.form["csrf_token"]:
-        #abort
-        pass
+    if session["csrf_token"] != request.form["csrf_token"]:
+        return abort(403)
     title = request.form["title"]
     content = request.form["content"]
     privat = request.form["private"]
@@ -202,9 +197,8 @@ def search():
 @app.route("/profile/<int:user_id>", methods=["get", "post"])
 def profile(user_id):
     if request.method == "POST":
-        if users.session["csrf_token"] != request.form["csrf_token"]:
-            #abort
-            pass
+        if session["csrf_token"] != request.form["csrf_token"]:
+            return abort(403)
         users.add_friend(user_id)
     username = users.get_name(user_id)
     public_threads = users.get_threads(user_id, 0)
@@ -227,18 +221,16 @@ def my_profile():
 
 @app.route("/add_friend/<int:id>", methods=["get", "post"])
 def add_friend(id):
-    if users.session["csrf_token"] != request.form["csrf_token"]:
-        #abort
-        pass
+    if session["csrf_token"] != request.form["csrf_token"]:
+        return abort(403)
     users.add_friend(id)
     my_profile()
     return redirect("/profile/"+str(users.user_id()))
 
 @app.route("/reject/<int:id>", methods=["get", "post"])
 def delete_friend(id):
-    if users.session["csrf_token"] != request.form["csrf_token"]:
-        #abort
-        pass
+    if session["csrf_token"] != request.form["csrf_token"]:
+        return abort(403)
     users.delete_friend(id)
     my_profile()
     return redirect("/profile/"+str(users.user_id()))
