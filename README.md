@@ -27,4 +27,4 @@ Salaiset alueet on toteutettu kavereiden väilinä yksityis/ryhmä keskusteluina
 
 
 ### Testaajalle
-Voit testata sovellusta normaaleilla käyttäjillä testi1 ja testi2 (salasanat ovat sama kuin käyttäjätunnus "testi1" ja "testi2"). Admin ominaisuuksia pääset testaamaan käyttäjä salasana parilla admin-admin.
+Voit testata sovellusta normaaleilla käyttäjillä testi1 ja testi2 (salasanat ovat sama kuin käyttäjätunnus "testi1" ja "testi2"). Admin ominaisuuksia pääset testaamaan käyttäjä salasana parilla admin-admin1.
