@@ -127,6 +127,12 @@ th, td {
                     <input class="button" type="submit" name="add" value="Lisää kavereita">
                 </form>
             {% endif %}
+            {% if session.user_id == starter[0][3] or is_admin %}
+                <form action="/delete/thread/{{ id }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+                    <input class="button" type="submit" value="Poista ketju">
+                </form>
+            {% endif %}
         {% endif %}
     {% endif %}
 </div>

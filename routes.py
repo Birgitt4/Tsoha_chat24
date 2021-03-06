@@ -4,10 +4,15 @@ import users
 import messages
 import threads
 
-@app.route("/")
+@app.route("/", methods=["get", "post"])
 def home():
-    list = threads.get_threads()
-    return render_template("home.html", threads=list)
+    topics = threads.get_topics()
+    if request.method == "POST":
+        topic_id = int(request.form["topics"])
+    else:
+        topic_id = 0
+    list = threads.get_threads(topic_id)
+    return render_template("home.html", threads=list, topics=topics, topic_id=topic_id)
 
 @app.route("/thread/<int:id>/<int:m_id>/<int:e>")
 def thread(id, m_id, e):
@@ -39,6 +44,8 @@ def error(e):
         error = "Viesti ei voi olla tyhjä"
     elif e == 3:
         error = "Kirjaudu sisään lähettääksesi viestin"
+    elif e == 4:
+        error = "Sinulla ei ole oikeuksia tuommoisiin toimiin!"
     return error
 
 @app.route("/thread/add/<int:id>", methods=["get", "post"])
@@ -112,6 +119,20 @@ def save(id):
             users.save(id)
     return redirect("/thread/"+str(id))
 
+@app.route("/delete/thread/<int:id>", methods=["get", "post"])
+def delete_thread(id):
+    allow = False
+    if threads.get_thread(id)[0][3] == users.user_id():
+        allow = True
+    elif users.is_admin():
+        allow = True
+    if not allow:
+        return redirect("/thread/"+str(id)+"/0/4")
+    if session["csrf_token"] != request.form["csrf_token"]:
+        return abort(403)
+    threads.delete(id)
+    return redirect("/")
+
 @app.route("/friendlist/<int:id>")
 def friends_to_thread(id):
     allow = False
@@ -135,9 +156,10 @@ def add_f(id):
 
 @app.route("/new_thread")
 def new():
-    if users.logged() != True:
-        return redirect("/login")
-    return render_template("new_thread.html", error=False, title="")
+    if users.logged():
+        topics = threads.get_topics()
+        return render_template("new_thread.html", error=False, title="", topics=topics)
+    return redirect("/login")
 
 @app.route("/send", methods=["get", "post"])
 def send_thread():
@@ -145,7 +167,9 @@ def send_thread():
         return abort(403)
     title = request.form["title"]
     content = request.form["content"]
-    privat = request.form["private"]
+    privat = int(request.form["private"])
+    topic_id = int(request.form["topics"])
+    print(topic_id)
     message = ""
     error = False
     thread_id = 0
@@ -162,10 +186,7 @@ def send_thread():
         message = "Otsikko ei saa olla tyhjä"
         error = True
     if not error:
-        if int(privat) == 0:
-            thread_id = threads.new_thread(title, content, 0)
-        if int(privat) == 1:
-            thread_id = threads.new_thread(title, content, 1)
+        thread_id = threads.new_thread(title, content, privat, topic_id)
         if thread_id == 0:
             message = "Jokin meni vikaan, yritä uudelleen"
             error = True

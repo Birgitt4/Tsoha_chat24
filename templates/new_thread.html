@@ -15,6 +15,13 @@
         Viesti: <br>
         <textarea name="content" rows="6" cols="70">{% if error %}{{ content }}{% endif %}</textarea>
         <br>
+        <label for="topics">Aihe: </label>
+        <select id="topics" name="topics">
+            {% for topic in topics %}
+            <option value="{{ topic[0] }}">{{ topic[1] }}</option>
+            {% endfor %}
+        </select>
+        <br>
         <input type="radio" id="pu" name="private" value="0" checked>
         <label for="pu">Julkinen</label><br>
         <input type="radio" id="pr" name="private" value="1">

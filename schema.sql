@@ -5,9 +5,12 @@ CREATE TABLE users (
 );
 CREATE TABLE threads (
     id SERIAL PRIMARY KEY, 
-    title TEXT, content TEXT, 
+    title TEXT, 
+    content TEXT, 
     user_id INTEGER REFERENCES users, 
-    privat INTEGER DEFAULT 0
+    privat INTEGER DEFAULT 0,
+    visible INTEGER DEFAULT 1,
+    topic_id INTEGER REFERENCES topics
 );
 CREATE TABLE messages (
     id SERIAL PRIMARY KEY, 
@@ -30,4 +33,8 @@ CREATE TABLE saved (
     thread_id INTEGER REFERENCES threads, 
     user_id INTEGER REFERENCES users, 
     UNIQUE(thread_id, user_id)
+);
+CREATE TABLE topics (
+    id SERIAL PRIMARY KEY,
+    topic TEXT
 );

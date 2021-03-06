@@ -3,6 +3,24 @@
 <link rel="stylesheet" href="/static/css/layout.css">
 {% block content %}
 <div class="column side">
+    <form action="/" method="POST">
+        <label for="topics">Aihe: </label>
+        <select id="topics" name="topics" onchange="this.form.submit()">
+            {% for topic in topics %}
+                {% if topic[0] == topic_id %}
+                    <option value="{{ topic[0] }}" selected>{{ topic[1] }}</option>
+                {% else %}
+                    <option value="{{ topic[0] }}">{{ topic[1] }}</option>
+                {% endif %}
+            {% endfor %}
+            {% if topic_id == 0 %}
+                <option value="0" selected>Kaikki</option>
+            {% else %}
+                <option value="0">Kaikki</option>
+            {% endif %}
+        </select>
+    </form>
+    <br>
     <a class="normal" href="/new_thread">Uusi keskustelu</a>
     <br>
     <br>
