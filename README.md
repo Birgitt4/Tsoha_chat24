@@ -1,27 +1,30 @@
 Tämä repositorio on luotu Helsingin yliopiston Tietokantasovellus kurssia varten.
 
-## Keskustelusovellus
+## Keskustelusovellus Chat24
 Löydät sovelluksen osoitteesta : https://tsoha-chat24.herokuapp.com/
 
-Tällä hetkellä sovelluksella on etusivu, jossa kaikki aloitukset ovat listattuna. Klikkaamalla aloituksen otsikkoa, käyttäjä siirtyy lukemaan ketjun viestejä. Kaikki pystyy lukemaan aloitusten viestit, mutta ainoastaan kirjautunut käyttäjä voi aloittaa uuden ketjun sekä kommentoida jo olemassa olevia.
+#### Keskustelut on jaettu alueisiin, joilla on viestejä sisältäviä viestiketjuja
+Uutta keskustelua luodessa käyttäjä voi valita, mihin aihealueeseen aloitus kuuluu. Sovelluksen etusivulla käyttäjä voi valita, näkeekö käyttäjä kaikki aloitukset vai vaikka esim. opiskeluun liittyvät aloitukset.
 
-Normaali käyttäjä voi myös muokata tai poistaa omia viestejään ja ylläpitäjä voi poistaa kaikkien käyttäjien lähettämiä viestejä.
-Aloituksien viesti osiota voi muokata, mutta ei poistaa.
+#### Käyttäjä voi olla peruskäyttäjä tai ylläpitäjä
+Käyttäjiä on kahta eri tasoa normaaleja käyttäjiä ja ylläpitäjiä. Normaalit käyttäjät voivat aloittaa ketjuja ja muokata omaa aloitusta tai poistaa oman aloituksen. Ylläpitäjä pystyy omien aloitusten ja viestien lisäksi poistamaan toisten viestejä tai koko aloituksen.
 
-Etusivulla on myös hakutoiminto, josta voi hakea viestejä, joko aloituksista (=otsikot ja aloitusviesti) tai vastauksista, voit hakea myös molemmista, jolloin tulokset tulevat eri "näkymiin" voit vaihdella näiden välillä napeista "Aloitukset" ja "Viestit". (Klikkaamalla tulosta linkki vie viestiketjuun (pitkässä ketjussa linkki vie oikeaan kohtaan ketjua!))
+#### Käyttäjä voi luoda tunnuksen, lähettää viestejä ja luoda uusia ketjuja
+Sivustolle voi luoda tunnuksen. Käyttäjänimen pitää olla uniikki, eli samaa käyttäjänimeä ei voi olla kahdella eri käyttäjällä. Salasanassa on oltava vähintään 6 merkkiä.
 
-Ketjuissa oikealla puolella on mahdollisuus tallentaa ketju, jolloin käyttäjä löytää takaisin ketjuun helposti oman sivun kautta kohdasta tallennetut. Myös klikkaamalla lähettäjän nimeä pääsee tämän profiiliin. Profiilissa näkyy käyttäjän aloitukset ja tallennetut ketjut. Omassa profiilissa näkyy näiden lisäksi yksityiset ketjut ja kaveri pyynnöt.
+Kun käyttäjä on kirjautunut sisään, voi käyttäjä vastata muiden aloituksiin, ketjun alhaalla olevasta viestikentästä. Etusivulla on mahdollisuus aloittaa myös uusi keskustelu klikkaamalla sivun vasemmalla olevaa "Uusi keskustelu" linkkiä. Käyttäjä voi valita, onko keskustelu julkinen vai yksityinen ja mihin aihealueeseen aloitus kuuluu.
 
-Voit toisen profiilissa pyytää tätä kaveriksi ja omassa profiilissa hyväksyä tai hylätä mahdolliset kaveri pyynnöt. Tarkoituksena on, että kavereiden kesken pystyy sitten aloittamaan näitä yksityisiä ketjuja.
+#### Käyttäjä pystyy muokkaamaan viestiä ja poistamaan sen myöhemmin
+Käyttäjä pystyy ketjussa muokkaamaan tai poistamaan omia viestejään. Muokkaus/poisto mahdollisuus löytyy oman viestin oikealta puolelta lähettäjän käyttäjänimen vierestä.
 
-Voit testata sovellusta käyttäjillä testi1 ja testi2 (salasanat ovat sama kuin käyttäjätunnus "testi1" ja "testi2"). Toki voi testata myös oman tunnuksen luomista.
+#### Viestejä voi etsiä hakutoiminnolla
+Etusivulla on hakutoiminto, johon voi antaa hakusanan sekä valita etsiikö tuloksia aloituksista vastauksista vai kummastakin. Jos käyttäjä ei valitse kumpaakaan tuloksia ei tule. Aloituksista etsimällä toiminto hakee otsikoista sekä aloittajan ensimmäisestä viestistä. Viesteistä etsimällä hakutulokset tulevat luonnollisesti vastauksista, jos käyttäjä löytää etsimäänsä hän pääsee kyseiseen ketjuun klikkaamalla tulosta.
 
-### vielä tulossa:
+Kun käyttäjä hakee aloituksista ja viesteistä tulokset tulevat eri "sivuille". Näiden välillä voi vaihtaa tulosten ylläolevista napeista.
 
-Ystävien kesken voi tehdä yksityisiä aloituksia.
+#### Sovellukseen voi luoda myös salaisia alueita, jolle on pääsy vain tietyillä käyttäjillä
+Salaiset alueet on toteutettu kavereiden väilinä yksityis/ryhmä keskusteluina. Jos käyttäjä pyytää toista käyttäjää kaveriksi, ja tämä toinen käyttäjä hyväksyy pyynnön, voi käyttäjä luoda yksityisen keskustelut ja lisätä tähän omia kavereitaa. Käyttäjän omat yksityiset aloitukset ja yksityiset aloitukset, johon käyttäjä on lisätty löytyvät käyttäjän omasta profiilistaan kohdasta yksityiset keskustelut.
 
-ensimmäisen vertaisarvion ehdottama css tiedoston tekeminen!
 
-(profiilikuvat, jos aikaa jää)
-
-Sekä vielä tarkistuksia lomakkeisiin. Tällä hetkellä vain kirjautumisiin ja tunnuksen luomiseen on nämä tehty. Myös täytyy vielä kerrata materiaalien tietoturva asiat ja tarkastaa oma sovellus näiden suhteen. Täytynee myös siistiä koodia!
+### Testaajalle
+Voit testata sovellusta normaaleilla käyttäjillä testi1 ja testi2 (salasanat ovat sama kuin käyttäjätunnus "testi1" ja "testi2"). Admin ominaisuuksia pääset testaamaan käyttäjä salasana parilla admin-admin.
