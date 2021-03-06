@@ -122,10 +122,11 @@ def save(id):
 @app.route("/delete/thread/<int:id>", methods=["get", "post"])
 def delete_thread(id):
     allow = False
-    if threads.get_thread(id)[0][3] == users.user_id():
-        allow = True
-    elif users.is_admin():
-        allow = True
+    if users.logged():
+        if threads.get_thread(id)[0][3] == users.user_id():
+            allow = True
+        elif users.is_admin():
+            allow = True
     if not allow:
         return redirect("/thread/"+str(id)+"/0/4")
     if session["csrf_token"] != request.form["csrf_token"]:
