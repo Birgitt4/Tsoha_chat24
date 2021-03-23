@@ -26,5 +26,29 @@ Kun käyttäjä hakee aloituksista ja viesteistä tulokset tulevat eri "sivuille
 Salaiset alueet on toteutettu kavereiden väilinä yksityis/ryhmä keskusteluina. Jos käyttäjä pyytää toista käyttäjää kaveriksi, ja tämä toinen käyttäjä hyväksyy pyynnön, voi käyttäjä luoda yksityisen keskustelut ja lisätä tähän omia kavereitaa. Käyttäjän omat yksityiset aloitukset ja yksityiset aloitukset, johon käyttäjä on lisätty löytyvät käyttäjän omasta profiilistaan kohdasta yksityiset keskustelut.
 
 
+
 ### Testaajalle
 Voit testata sovellusta normaaleilla käyttäjillä testi1 ja testi2 (salasanat ovat sama kuin käyttäjätunnus "testi1" ja "testi2"). Admin ominaisuuksia pääset testaamaan käyttäjä salasana parilla admin-admin1.
+
+23.3. Koodiin jäänyt valitettavasti huolimattomuusvirhe:
+
+    @app.route("/thread/add/<int:id>", methods=["get", "post"])
+
+    def new_message(id):
+
+        if session["csrf_token"] != request.form["csrf_token"]:
+    
+            return abort(403)
+    
+        e = 0
+    
+        content = request.form["content"]
+    
+        if not users.logged():
+        
+            e = 3
+        
+            print("false")
+        
+        
+csrf_token pitäisi tarkistaa vasta sisäänkirjautumisen tarkistuksen jälkeen. Näin heittää errorin, kun yrittää lähettää viestin ilman, että on kirjautunut sisään. Ja pisteenä i:n päälle print komento :)
