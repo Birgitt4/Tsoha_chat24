@@ -1,7 +1,7 @@
 Tämä repositorio on luotu Helsingin yliopiston Tietokantasovellus kurssia varten.
 
-## Keskustelusovellus Chat24
-Löydät sovelluksen osoitteesta : https://tsoha-chat24.herokuapp.com/
+## ~~Keskustelusovellus Chat24
+Löydät sovelluksen osoitteesta : https://tsoha-chat24.herokuapp.com/~~
 
 #### Keskustelut on jaettu alueisiin, joilla on viestejä sisältäviä viestiketjuja
 Uutta keskustelua luodessa käyttäjä voi valita, mihin aihealueeseen aloitus kuuluu. Sovelluksen etusivulla käyttäjä voi valita, näkeekö käyttäjä kaikki aloitukset vai vaikka esim. opiskeluun liittyvät aloitukset.
